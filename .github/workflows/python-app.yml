@@ -1,0 +1,51 @@
+name: Python CI
+
+#trigger the workflow on any push to the main branch or pull request.
+#define events: push, pull, merge, delete, etc; 
+#based on the events one can trigger a workflow.
+on:
+  #event push:
+  push:
+    branches:
+      - main
+  #event pull_request:
+  pull_request:
+    branches:
+      - main
+      #-feature -> different branch for feature development
+      #-develop -> different branch for development
+      #-qa -> different branch for testing; qa=quality assurance.
+      #-uat -> different branch for testing; uat=user acceptance testing.
+      #-staging -> different branch for testing
+      #-production -> different branch for production
+
+jobs:
+  test:
+    #github provides containers for: #ubuntu, windows, macos
+    runs-on: ubuntu-latest
+    #execution of the workflow is done in steps.
+    steps:
+      #step 1: check out the code from the repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      #step 2: set up Python environment
+      #uses the setup-python action to set up a Python environment.
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'  # Specify the Python version you want to use
+
+      #step 3: install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      #step 4: run tests
+      #uses pytest to run the tests defined in the repository.
+      - name: Run tests
+        run: |
+          # Run pytest to execute the tests;
+          # it looks into the tests folder and runs all the test files.
+          pytest
